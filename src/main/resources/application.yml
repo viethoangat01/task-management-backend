@@ -1,3 +1,17 @@
 spring:
   application:
     name: task-management-backend
+  # Ignore spring boot banner
+  main:
+    banner-mode: off
+
+  # Config database
+  datasource:
+    url: jdbc:mariadb://localhost:3306/task_management
+    username: taskmanagement
+    password: taskmanagement
+
+  # Config liquibase:
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.xml

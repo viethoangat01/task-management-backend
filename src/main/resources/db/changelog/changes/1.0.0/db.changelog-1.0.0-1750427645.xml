@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
+
+  <changeSet id="1750427645_01" author="diepnq46">
+    <createTable tableName="projects_members">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+      <column name="project_id" type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+      <column name="role" type="ENUM('PROJECT_MANAGER', 'MEMBER')"/>
+      <column name="joined_at" type="TIMESTAMP"/>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="projects_members" baseColumnNames="user_id" constraintName="fk_projects_members_users"
+      referencedTableName="users" referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="projects_members" baseColumnNames="project_id" constraintName="fk_projects_members_projects"
+      referencedTableName="projects" referencedColumnNames="id"/>
+  </changeSet>
+</databaseChangeLog>

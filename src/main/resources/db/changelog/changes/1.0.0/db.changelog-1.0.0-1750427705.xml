@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.22.xsd">
+
+  <changeSet id="1750427705_01" author="diepnq46">
+    <createTable tableName="tasks">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="title" type="VARCHAR(255)" />
+      <column name="description" type="TEXT" />
+      <column name="status" type="ENUM('TODO', 'IN_PROGRESS', 'DONE')" />
+      <column name="priority" type="ENUM('LOW', 'MEDIUM', 'HIGH')" />
+      <column name="dua_date" type="TIMESTAMP" />
+      <column name="project_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="assignee_id" type="BIGINT"/>
+      <column name="created_at" type="TIMESTAMP"/>
+      <column name="updated_at" type="TIMESTAMP"/>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="tasks" baseColumnNames="project_id" constraintName="fk_tasks_projects"
+      referencedTableName="projects" referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="tasks" baseColumnNames="assignee_id" constraintName="fk_tasks_users"
+      referencedTableName="users" referencedColumnNames="id"/>
+  </changeSet>
+</databaseChangeLog>
