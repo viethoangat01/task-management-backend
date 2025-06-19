@@ -1,0 +1,15 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use
+# ===================================================================
+
+spring:
+  application:
+    name: task-management
+  profiles:
+      active: @spring.profiles.active@
+      group:
+        dev:
+          - dev
+          - tls

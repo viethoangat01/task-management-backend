@@ -1,0 +1,26 @@
+# ===================================================================
+# Spring Boot configuration for the "dev" profile.
+#
+# This configuration overrides the application.yml file.
+# ===================================================================
+
+logging:
+  level:
+    ROOT: DEBUG
+    com.personal.taskmanagement: DEBUG
+
+spring:
+  config:
+    active:
+      on-profile: "dev"
+
+server:
+  port: 8080
+
+application:
+  # CORS is only enabled by default with the "dev" profile
+  cors:
+    allowed-origins: "*"
+    allowed-methods: "GET, HEAD, POST, PUT, DELETE"
+    allowed-headers: "*"
+    max-age: 1800

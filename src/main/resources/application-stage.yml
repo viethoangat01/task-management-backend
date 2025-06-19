@@ -1,0 +1,18 @@
+# ===================================================================
+# Spring Boot configuration for the "stage" profile.
+#
+# This configuration overrides the application.yml file.
+# ===================================================================
+
+logging:
+  level:
+    ROOT: INFO
+    com.personal.taskmanagement: WARN
+
+spring:
+  config:
+    active:
+      on-profile: "stage"
+
+server:
+  port: 8081
