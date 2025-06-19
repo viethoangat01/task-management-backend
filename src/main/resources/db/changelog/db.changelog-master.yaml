@@ -1,17 +1,20 @@
 databaseChangeLog:
   - changeSet:
       id: 1
-      author: you
+      author: maiducanh
       changes:
         - createTable:
             tableName: example_table
             columns:
               - column:
                   name: id
-                  type: int
+                  type: INT
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: name
-                  type: varchar(255)
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
