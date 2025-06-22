@@ -18,9 +18,18 @@ repositories {
 }
 
 dependencies {
+	// --- SPRING CORE ---
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+	// --- DATABASE ---
+	implementation("org.liquibase:liquibase-core")
+	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+
+	// --- TESTING ---
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
 }
 
 tasks.withType<Test> {
