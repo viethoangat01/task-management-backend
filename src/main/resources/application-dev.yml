@@ -3,7 +3,7 @@
 #
 # This configuration overrides the application.yml file.
 # ===================================================================
-
+#
 logging:
   level:
     ROOT: DEBUG
@@ -13,6 +13,13 @@ spring:
   config:
     active:
       on-profile: "dev"
+  datasource:
+    url: jdbc:mariadb://localhost:3306/task_management
+    username: taskmanagement
+    password: taskmanagement
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.xml
 
 server:
   port: 8080
