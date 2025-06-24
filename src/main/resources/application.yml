@@ -8,7 +8,7 @@ spring:
   application:
     name: task-management
   profiles:
-      active: @spring.profiles.active@
+#      active: @spring.profiles.active@
       group:
         dev:
           - dev
