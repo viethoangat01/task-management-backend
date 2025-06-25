@@ -4,6 +4,9 @@
 # This configuration overrides the application.yml file.
 # ===================================================================
 
+server:
+  port: 8080
+
 logging:
   level:
     ROOT: DEBUG
@@ -13,9 +16,29 @@ spring:
   config:
     active:
       on-profile: "dev"
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
 
-server:
-  port: 8080
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: true
+        use_sql_comments: true
 
 application:
   # CORS is only enabled by default with the "dev" profile

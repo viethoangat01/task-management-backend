@@ -4,6 +4,9 @@
 # This configuration overrides the application.yml file.
 # ===================================================================
 
+server:
+  port: 8081
+
 logging:
   level:
     ROOT: INFO
@@ -13,6 +16,25 @@ spring:
   config:
     active:
       on-profile: "stage"
+  datasource:
+    url: jdbc:mariadb://staging-db-host:3306/your_staging_db?useSSL=true&serverTimezone=Asia/Ho_Chi_Minh
+    username: staging_user
+    password: staging_password
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      pool-name: HikariCP-Staging
+      max-lifetime: 1800000
+      connection-timeout: 30000
 
-server:
-  port: 8081
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: false
