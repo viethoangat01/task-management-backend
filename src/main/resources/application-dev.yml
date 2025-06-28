@@ -3,7 +3,6 @@
 #
 # This configuration overrides the application.yml file.
 # ===================================================================
-#
 
 logging:
   level:
@@ -44,3 +43,10 @@ application:
     allowed-methods: "GET, HEAD, POST, PUT, DELETE"
     allowed-headers: "*"
     max-age: 1800
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    url: /v3/api-docs
