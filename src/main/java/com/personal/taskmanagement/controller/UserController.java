@@ -1,7 +1,8 @@
 package com.personal.taskmanagement.controller;
 
-import com.personal.taskmanagement.model.dto.request.user.UserCreateRequest;
-import com.personal.taskmanagement.model.dto.response.user.UserResponse;
+import com.personal.taskmanagement.model.dto.UserDto;
+import com.personal.taskmanagement.model.vo.UserCreateRequest;
+import com.personal.taskmanagement.model.vo.UserResponse;
 import com.personal.taskmanagement.service.UserService;
 import com.personal.taskmanagement.util.annotation.ApiMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST controller for managing the user's account
+ * REST controller for managing the user's account.
  */
 @Tag(name = "Manage User API", description = "APIs for user management")
 @RestController
@@ -47,11 +49,10 @@ public class UserController {
       ),
       responses = {
           @ApiResponse(responseCode = "200", description = "User successfully created"),
-//          @ApiResponse(responseCode = "400", description = "Invalid request payload"),
-//          @ApiResponse(responseCode = "403", description = "Access denied — admin only")
       })
   @ApiMessage("User created successfully")
-  public ResponseEntity<UserResponse> createUser(@RequestBody UserCreateRequest userCreateRequest) {
-    return ResponseEntity.ok(userService.createUser(userCreateRequest));
+  public ResponseEntity<UserResponse> createUser(
+      @RequestBody @Valid UserCreateRequest userCreateRequest) {
+    return ResponseEntity.ok(userService.createUser(UserDto.of(userCreateRequest)));
   }
 }

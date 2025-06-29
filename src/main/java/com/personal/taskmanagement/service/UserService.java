@@ -1,36 +1,48 @@
 package com.personal.taskmanagement.service;
 
 import com.personal.taskmanagement.entity.User;
-import com.personal.taskmanagement.mapper.UserMapper;
-import com.personal.taskmanagement.model.dto.request.user.UserCreateRequest;
-import com.personal.taskmanagement.model.dto.response.user.UserResponse;
+import com.personal.taskmanagement.model.dto.UserDto;
 import com.personal.taskmanagement.model.exception.InvalidValueException;
+import com.personal.taskmanagement.model.vo.UserResponse;
 import com.personal.taskmanagement.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for managing users.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
   private final UserRepository userRepo;
   private final PasswordEncoder passwordEncoder;
-  private final UserMapper userMapper;
 
-  public UserResponse createUser(UserCreateRequest userDto) {
+  /**
+   * Creates a new user in the system.
+   * <p>
+   * This method performs the following actions:
+   *
+   * @param userDto The data transfer object containing user details to create.
+   * @return A {@link UserResponse} of the newly created user.
+   */
+  public UserResponse createUser(UserDto userDto) {
     // Check unique email
     if (userRepo.existsByEmail(userDto.getEmail())) {
-      throw new InvalidValueException("Email address already in use");
+      throw new InvalidValueException("email", "email is already in use");
     }
 
-    // Convert to entity
-    User user = userMapper.mapToUser(userDto);
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    // Create entity
+    User newUser = new User();
+    newUser.setName(userDto.getName());
+    newUser.setEmail(userDto.getEmail());
+    newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    newUser.setRole(userDto.getRole());
 
     // Save to database
-    User savedUser = userRepo.save(user);
+    userRepo.save(newUser);
 
-    return userMapper.mapToUserResponse(savedUser);
+    return UserResponse.of(newUser);
   }
 }
