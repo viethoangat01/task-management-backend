@@ -1,14 +1,12 @@
 package com.personal.taskmanagement.service;
 
 import com.personal.taskmanagement.entity.User;
-import com.personal.taskmanagement.mapper.UserMapper;
 import com.personal.taskmanagement.model.constant.RoleUser;
-import com.personal.taskmanagement.model.dto.response.PaginationMetadata;
-import com.personal.taskmanagement.model.dto.response.user.UserPageResponse;
-import com.personal.taskmanagement.model.dto.response.user.UserSearchResponse;
+import com.personal.taskmanagement.model.vo.PaginationMetadata;
+import com.personal.taskmanagement.model.vo.UserPageResponse;
+import com.personal.taskmanagement.model.vo.UserSearchResponse;
 import com.personal.taskmanagement.repository.UserRepository;
 import com.personal.taskmanagement.repository.specification.UserSpecification;
-import com.personal.taskmanagement.util.FieldUtils;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private final UserRepository userRepo;
-  private final UserMapper userMapper;
 
   /**
    * Searches for users based on optional filters such as name, email, and role, with support for
@@ -38,10 +35,10 @@ public class UserService {
    *                  empty result.
    * @param page      Page number for pagination (zero-based index)
    * @param size      Number of records per page
-   * @param sortParam Sort field and direction (e.g., "createdAt,desc"). If invalid field,
+   * @param sortParam Sort field and direction (e.g., "createdAt,desc").
    * @return {@link UserPageResponse} containing the list of users and pagination metadata
    */
-  public UserPageResponse searchUser(String name, String email, String role, int page, int size,
+  public UserPageResponse searchUser(String name, String email, RoleUser role, int page, int size,
       String sortParam) {
     // Create specification returns all records
     Specification<User> spec = (root, query, cb) -> cb.conjunction();
@@ -57,9 +54,8 @@ public class UserService {
     }
 
     // Filter by role (equals)
-    RoleUser roleEnum = parseRole(role);
-    if (roleEnum != null) {
-      spec = spec.and(UserSpecification.hasRole(roleEnum));
+    if (role != null) {
+      spec = spec.and(UserSpecification.hasRole(role));
     }
 
     // Sorting and paging
@@ -72,7 +68,7 @@ public class UserService {
     // Map to DTO
     List<UserSearchResponse> users = pageUser.getContent()
         .stream()
-        .map(userMapper::mapToUserSearchResponse)
+        .map(UserSearchResponse::of)
         .toList();
 
     PaginationMetadata metadata = new PaginationMetadata(page, size,
@@ -93,25 +89,14 @@ public class UserService {
     String[] parts = sortParam.split(",");
 
     String sortField = parts[0].trim();
-    List<String> fieldNames = FieldUtils.getFieldNames(User.class);
-    sortField = fieldNames.contains(sortField) ? sortField : "createdAt";
+//    List<String> fieldNames = FieldUtils.getFieldNames(User.class);
+//    sortField = fieldNames.contains(sortField) ? sortField : "createdAt";
+    sortField = sortField.isBlank() ? "createdAt" : sortField;
 
     if (parts.length > 1 && parts[1].equalsIgnoreCase("asc")) {
       return Sort.by(sortField).ascending();
     }
 
     return Sort.by(sortField).descending();
-  }
-
-  private static RoleUser parseRole(String role) {
-    if (role == null || role.isEmpty()) {
-      return null;
-    }
-
-    try {
-      return RoleUser.valueOf(role);
-    } catch (IllegalArgumentException e) {
-      return null;
-    }
   }
 }

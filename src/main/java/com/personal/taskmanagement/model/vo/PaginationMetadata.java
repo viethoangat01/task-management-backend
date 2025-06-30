@@ -1,4 +1,4 @@
-package com.personal.taskmanagement.model.dto.response;
+package com.personal.taskmanagement.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

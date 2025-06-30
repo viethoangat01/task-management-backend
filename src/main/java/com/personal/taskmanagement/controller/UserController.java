@@ -1,7 +1,9 @@
 package com.personal.taskmanagement.controller;
 
-import com.personal.taskmanagement.model.dto.response.user.UserPageResponse;
+import com.personal.taskmanagement.model.constant.RoleUser;
+import com.personal.taskmanagement.model.vo.UserPageResponse;
 import com.personal.taskmanagement.service.UserService;
+import com.personal.taskmanagement.util.annotation.ApiMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,6 @@ public class UserController {
    * @param sort  (optional) Sort field and direction, e.g. "createdAt,desc"
    * @return Paginated list of users matching the criteria
    */
-
   @GetMapping("/search")
   @Operation(summary = "Create a new user account (Admin only).",
       description = "This API allows an administrator to create a new user by providing required user data in the request body.",
@@ -51,14 +51,12 @@ public class UserController {
       },
       responses = {
           @ApiResponse(responseCode = "200", description = "User successfully created"),
-//          @ApiResponse(responseCode = "400", description = "Invalid request payload"),
-//          @ApiResponse(responseCode = "403", description = "Access denied — admin only")
       })
-
+  @ApiMessage("Users fetched successfully")
   public ResponseEntity<UserPageResponse> createUser(
       @RequestParam(name = "name", required = false) String name,
       @RequestParam(name = "email", required = false) String email,
-      @RequestParam(name = "role", required = false) String role,
+      @RequestParam(name = "role", required = false) RoleUser role,
       @RequestParam(name = "page", required = false, defaultValue = "0") int page,
       @RequestParam(name = "size", required = false, defaultValue = "10") int size,
       @RequestParam(name = "sort", required = false, defaultValue = "createdAt,desc") String sort) {

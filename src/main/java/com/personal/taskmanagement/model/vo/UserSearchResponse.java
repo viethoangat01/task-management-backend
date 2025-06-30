@@ -1,6 +1,8 @@
-package com.personal.taskmanagement.model.dto.response.user;
+package com.personal.taskmanagement.model.vo;
 
+import com.personal.taskmanagement.entity.User;
 import com.personal.taskmanagement.model.constant.RoleUser;
+import com.personal.taskmanagement.util.MapperUtil;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,4 +20,8 @@ public class UserSearchResponse {
   private String email;
   private RoleUser role;
   private Instant createdAt;
+
+  public static UserSearchResponse of(User user) {
+    return MapperUtil.mapper.map(user, UserSearchResponse.class);
+  }
 }

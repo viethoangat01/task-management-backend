@@ -1,6 +1,6 @@
 package com.personal.taskmanagement.util;
 
-import com.personal.taskmanagement.model.dto.response.RestResponse;
+import com.personal.taskmanagement.model.vo.RestResponse;
 import com.personal.taskmanagement.util.annotation.ApiMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.Instant;

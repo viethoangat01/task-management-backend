@@ -1,6 +1,5 @@
-package com.personal.taskmanagement.model.dto.response.user;
+package com.personal.taskmanagement.model.vo;
 
-import com.personal.taskmanagement.model.dto.response.PaginationMetadata;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,5 +13,6 @@ import lombok.Setter;
 public class UserPageResponse {
 
   private List<UserSearchResponse> users;
+
   private PaginationMetadata pagination;
 }
