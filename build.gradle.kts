@@ -21,24 +21,23 @@ dependencies {
 	// --- SPRING CORE ---
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 
-    // --- DATABASE ---
-    implementation("org.liquibase:liquibase-core")
-    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+	// --- DATABASE ---
+	implementation("org.liquibase:liquibase-core")
+	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
-    // --- SPRING SECURITY ---
+	// --- SPRING SECURITY ---
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	testImplementation("org.springframework.security:spring-security-test")
 
 	// --- SWAGGER / OPENAPI ---
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
-	// --- MAPSTRUCT
-	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
-	implementation("org.mapstruct:mapstruct:1.6.3")
-	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+	// --- MODEL MAPPER ---
+	implementation("org.modelmapper:modelmapper:3.2.0")
 
-	// --- LOMBOK
+	// --- LOMBOK ---
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testCompileOnly("org.projectlombok:lombok")

@@ -1,7 +1,8 @@
 package com.personal.taskmanagement.controller;
 
-import com.personal.taskmanagement.model.dto.request.user.UserUpdateRequest;
-import com.personal.taskmanagement.model.dto.response.user.UserResponse;
+import com.personal.taskmanagement.model.dto.UserDto;
+import com.personal.taskmanagement.model.vo.UserResponse;
+import com.personal.taskmanagement.model.vo.UserUpdateRequest;
 import com.personal.taskmanagement.service.UserService;
 import com.personal.taskmanagement.util.annotation.ApiMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,10 +10,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,11 +49,10 @@ public class UserController {
       ),
       responses = {
           @ApiResponse(responseCode = "200", description = "User successfully updated"),
-//          @ApiResponse(responseCode = "400", description = "Invalid request payload"),
-//          @ApiResponse(responseCode = "403", description = "Access denied — admin only")
       })
   @ApiMessage("User updated successfully")
-  public ResponseEntity<UserResponse> updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
-    return ResponseEntity.ok(userService.updateUser(userUpdateRequest));
+  public ResponseEntity<UserResponse> updateUser(
+      @RequestBody @Valid UserUpdateRequest userUpdateRequest) {
+    return ResponseEntity.ok(userService.updateUser(UserDto.of(userUpdateRequest)));
   }
 }
