@@ -23,11 +23,10 @@ public class UserService {
    * Creates a new user in the system.
    * <p>
    * This method performs the following actions:
-   *
    * @param userDto The data transfer object containing user details to create.
    * @return A {@link UserResponse} of the newly created user.
    */
-  public UserResponse createUser(UserDto userDto) {
+  public UserDto createUser(UserDto userDto) {
     // Check unique email
     if (userRepo.existsByEmail(userDto.getEmail())) {
       throw new InvalidValueException("email", "email is already in use");
@@ -43,6 +42,6 @@ public class UserService {
     // Save to database
     userRepo.save(newUser);
 
-    return UserResponse.of(newUser);
+    return UserDto.of(newUser);
   }
 }

@@ -53,6 +53,7 @@ public class UserController {
   @ApiMessage("User created successfully")
   public ResponseEntity<UserResponse> createUser(
       @RequestBody @Valid UserCreateRequest userCreateRequest) {
-    return ResponseEntity.ok(userService.createUser(UserDto.of(userCreateRequest)));
+    UserDto newUser = userService.createUser(UserDto.of(userCreateRequest));
+    return ResponseEntity.ok(UserResponse.of(newUser));
   }
 }
