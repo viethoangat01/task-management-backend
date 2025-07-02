@@ -1,4 +1,4 @@
-package com.personal.taskmanagement.model.vo;
+package com.personal.taskmanagement.model.dto;
 
 import com.personal.taskmanagement.entity.User;
 import com.personal.taskmanagement.model.constant.RoleUser;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSearchResponse {
+public class UserSearchDto {
 
   private long id;
   private String name;
@@ -21,7 +21,7 @@ public class UserSearchResponse {
   private RoleUser role;
   private Instant createdAt;
 
-  public static UserSearchResponse of(User user) {
-    return MapperUtil.mapper.map(user, UserSearchResponse.class);
+  public static UserSearchDto of(User user) {
+    return MapperUtil.mapper.map(user, UserSearchDto.class);
   }
 }

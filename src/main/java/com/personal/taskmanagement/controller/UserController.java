@@ -1,7 +1,8 @@
 package com.personal.taskmanagement.controller;
 
 import com.personal.taskmanagement.model.constant.RoleUser;
-import com.personal.taskmanagement.model.vo.UserPageResponse;
+import com.personal.taskmanagement.model.dto.UserPageDto;
+import com.personal.taskmanagement.model.dto.UserQueryDto;
 import com.personal.taskmanagement.service.UserService;
 import com.personal.taskmanagement.util.annotation.ApiMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,13 +54,14 @@ public class UserController {
           @ApiResponse(responseCode = "200", description = "User successfully created"),
       })
   @ApiMessage("Users fetched successfully")
-  public ResponseEntity<UserPageResponse> createUser(
+  public ResponseEntity<UserPageDto> createUser(
       @RequestParam(name = "name", required = false) String name,
       @RequestParam(name = "email", required = false) String email,
       @RequestParam(name = "role", required = false) RoleUser role,
       @RequestParam(name = "page", required = false, defaultValue = "0") int page,
       @RequestParam(name = "size", required = false, defaultValue = "10") int size,
       @RequestParam(name = "sort", required = false, defaultValue = "createdAt,desc") String sort) {
-    return ResponseEntity.ok(userService.searchUser(name, email, role, page, size, sort));
+    UserQueryDto queryParamsDto = new UserQueryDto(name, email, role, page, size, sort);
+    return ResponseEntity.ok(userService.searchUser(queryParamsDto));
   }
 }

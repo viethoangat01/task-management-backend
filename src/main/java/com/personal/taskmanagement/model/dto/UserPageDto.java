@@ -1,4 +1,4 @@
-package com.personal.taskmanagement.model.vo;
+package com.personal.taskmanagement.model.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPageResponse {
+public class UserPageDto {
 
-  private List<UserSearchResponse> users;
+  private List<UserSearchDto> users;
 
-  private PaginationMetadata pagination;
+  private PaginationMetadataDto pagination;
 }

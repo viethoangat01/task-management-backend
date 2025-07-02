@@ -1,4 +1,4 @@
-package com.personal.taskmanagement.model.vo;
+package com.personal.taskmanagement.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaginationMetadata {
+public class PaginationMetadataDto {
 
   private int page;
   private int size;

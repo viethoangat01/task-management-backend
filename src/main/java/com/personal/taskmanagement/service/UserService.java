@@ -1,10 +1,10 @@
 package com.personal.taskmanagement.service;
 
 import com.personal.taskmanagement.entity.User;
-import com.personal.taskmanagement.model.constant.RoleUser;
-import com.personal.taskmanagement.model.vo.PaginationMetadata;
-import com.personal.taskmanagement.model.vo.UserPageResponse;
-import com.personal.taskmanagement.model.vo.UserSearchResponse;
+import com.personal.taskmanagement.model.dto.PaginationMetadataDto;
+import com.personal.taskmanagement.model.dto.UserPageDto;
+import com.personal.taskmanagement.model.dto.UserQueryDto;
+import com.personal.taskmanagement.model.dto.UserSearchDto;
 import com.personal.taskmanagement.repository.UserRepository;
 import com.personal.taskmanagement.repository.specification.UserSpecification;
 import java.util.List;
@@ -29,56 +29,53 @@ public class UserService {
    * Searches for users based on optional filters such as name, email, and role, with support for
    * pagination and sorting.
    *
-   * @param name      (optional) Filter by user's name (contains, case-insensitive)
-   * @param email     (optional) Filter by user email (equals)
-   * @param role      (optional) Filter by user role (e.g., MEMBER, ADMIN). If invalid, returns
-   *                  empty result.
-   * @param page      Page number for pagination (zero-based index)
-   * @param size      Number of records per page
-   * @param sortParam Sort field and direction (e.g., "createdAt,desc").
-   * @return {@link UserPageResponse} containing the list of users and pagination metadata
+   * @param queryParamsDto optional search filters, including: - User's name: contains,
+   *                    case-insensitive - Email: exact match - Role: exact match Supports
+   *                    pagination and sorting. Returns empty result if no user matches the
+   *                    filters.
+   * @return {@link UserPageDto} containing the list of users and pagination metadata
    */
-  public UserPageResponse searchUser(String name, String email, RoleUser role, int page, int size,
-      String sortParam) {
+  public UserPageDto searchUser(UserQueryDto queryParamsDto) {
     // Create specification returns all records
     Specification<User> spec = (root, query, cb) -> cb.conjunction();
 
     // Filter by name (contains, case-insensitive)
-    if (name != null && !name.isEmpty()) {
-      spec = spec.and(UserSpecification.nameLike(name));
+    if (queryParamsDto.getName() != null && !queryParamsDto.getName().isEmpty()) {
+      spec = spec.and(UserSpecification.nameLike(queryParamsDto.getName()));
     }
 
     // Filter by email (equals)
-    if (email != null && !email.isEmpty()) {
-      spec = spec.and(UserSpecification.hasEmail(email));
+    if (queryParamsDto.getEmail() != null && !queryParamsDto.getEmail().isEmpty()) {
+      spec = spec.and(UserSpecification.hasEmail(queryParamsDto.getEmail()));
     }
 
     // Filter by role (equals)
-    if (role != null) {
-      spec = spec.and(UserSpecification.hasRole(role));
+    if (queryParamsDto.getRole() != null) {
+      spec = spec.and(UserSpecification.hasRole(queryParamsDto.getRole()));
     }
 
     // Sorting and paging
-    Sort sort = generateSort(sortParam);
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Sort sort = generateSort(queryParamsDto.getSort());
+    Pageable pageable = PageRequest.of(queryParamsDto.getPage(), queryParamsDto.getSize(), sort);
 
     // Search in repo
     Page<User> pageUser = userRepo.findAll(spec, pageable);
 
     // Map to DTO
-    List<UserSearchResponse> users = pageUser.getContent()
+    List<UserSearchDto> users = pageUser.getContent()
         .stream()
-        .map(UserSearchResponse::of)
+        .map(UserSearchDto::of)
         .toList();
 
-    PaginationMetadata metadata = new PaginationMetadata(page, size,
-        (int) pageUser.getTotalElements(), pageUser.getTotalPages(), sortParam);
+    PaginationMetadataDto metadata = new PaginationMetadataDto(queryParamsDto.getPage(),
+        queryParamsDto.getSize(),
+        (int) pageUser.getTotalElements(), pageUser.getTotalPages(), queryParamsDto.getSort());
 
-    UserPageResponse userPageResponse = new UserPageResponse();
-    userPageResponse.setUsers(users);
-    userPageResponse.setPagination(metadata);
+    UserPageDto userPageDto = new UserPageDto();
+    userPageDto.setUsers(users);
+    userPageDto.setPagination(metadata);
 
-    return userPageResponse;
+    return userPageDto;
   }
 
   private static Sort generateSort(String sortParam) {
@@ -89,8 +86,6 @@ public class UserService {
     String[] parts = sortParam.split(",");
 
     String sortField = parts[0].trim();
-//    List<String> fieldNames = FieldUtils.getFieldNames(User.class);
-//    sortField = fieldNames.contains(sortField) ? sortField : "createdAt";
     sortField = sortField.isBlank() ? "createdAt" : sortField;
 
     if (parts.length > 1 && parts[1].equalsIgnoreCase("asc")) {
