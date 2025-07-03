@@ -13,6 +13,9 @@ import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+/**
+ * Controller advice for automatic response formatting according to standards
+ */
 @ControllerAdvice(basePackages = "com.personal.taskmanagement.controller")
 public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
