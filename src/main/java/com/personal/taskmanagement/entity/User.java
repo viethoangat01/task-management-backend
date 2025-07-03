@@ -53,4 +53,10 @@ public class User {
   @Column(name = "updated_at")
   @LastModifiedDate
   private Instant updatedAt;
+
+  public User(String name, String email, RoleUser role) {
+    this.name = name;
+    this.email = email;
+    this.role = role;
+  }
 }
