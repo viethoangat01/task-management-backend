@@ -27,6 +27,10 @@ dependencies {
 	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
+	// --- SPRING SECURITY ---
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	testImplementation("org.springframework.security:spring-security-test")
+
 	// --- SWAGGER / OPENAPI ---
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 

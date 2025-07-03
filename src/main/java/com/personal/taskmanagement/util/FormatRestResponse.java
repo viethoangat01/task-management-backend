@@ -34,7 +34,6 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
       Class<? extends HttpMessageConverter<?>> selectedConverterType,
       ServerHttpRequest request,
       ServerHttpResponse response) {
-
     HttpServletResponse servletResponse = ((ServletServerHttpResponse) response).getServletResponse();
     int status = servletResponse.getStatus();
 
@@ -53,5 +52,4 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
     return new RestResponse<>(Instant.now(), status, message, body);
   }
-
 }
