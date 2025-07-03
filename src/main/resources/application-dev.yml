@@ -3,12 +3,11 @@
 #
 # This configuration overrides the application.yml file.
 # ===================================================================
-#
 
-logging:
-  level:
-    ROOT: DEBUG
-    com.personal.taskmanagement: DEBUG
+#logging:
+#  level:
+#    ROOT: DEBUG
+#    com.personal.taskmanagement: DEBUG
 
 spring:
   config:

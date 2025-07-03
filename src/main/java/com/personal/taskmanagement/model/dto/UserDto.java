@@ -3,6 +3,7 @@ package com.personal.taskmanagement.model.dto;
 import com.personal.taskmanagement.entity.User;
 import com.personal.taskmanagement.model.constant.RoleUser;
 import com.personal.taskmanagement.model.vo.UserCreateRequest;
+import com.personal.taskmanagement.model.vo.UserUpdateRequest;
 import com.personal.taskmanagement.util.MapperUtil;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -34,6 +35,10 @@ public class UserDto {
 
   public static UserDto of(UserCreateRequest userCreateRequest) {
     return MapperUtil.mapper.map(userCreateRequest, UserDto.class);
+  }
+
+  public static UserDto of(UserUpdateRequest userUpdateRequest) {
+    return MapperUtil.mapper.map(userUpdateRequest, UserDto.class);
   }
 
   public static UserDto of(User user) {
