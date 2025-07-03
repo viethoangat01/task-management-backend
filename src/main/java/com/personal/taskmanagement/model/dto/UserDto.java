@@ -1,5 +1,6 @@
 package com.personal.taskmanagement.model.dto;
 
+import com.personal.taskmanagement.entity.User;
 import com.personal.taskmanagement.model.constant.RoleUser;
 import com.personal.taskmanagement.model.vo.UserUpdateRequest;
 import com.personal.taskmanagement.util.MapperUtil;
@@ -22,5 +23,9 @@ public class UserDto {
 
   public static UserDto of(UserUpdateRequest userUpdateRequest) {
     return MapperUtil.mapper.map(userUpdateRequest, UserDto.class);
+  }
+
+  public static UserDto of(User user) {
+    return MapperUtil.mapper.map(user, UserDto.class);
   }
 }

@@ -53,6 +53,7 @@ public class UserController {
   @ApiMessage("User updated successfully")
   public ResponseEntity<UserResponse> updateUser(
       @RequestBody @Valid UserUpdateRequest userUpdateRequest) {
-    return ResponseEntity.ok(userService.updateUser(UserDto.of(userUpdateRequest)));
+    UserDto updatedUser = userService.updateUser(UserDto.of(userUpdateRequest));
+    return ResponseEntity.ok(UserResponse.of(updatedUser));
   }
 }

@@ -26,7 +26,7 @@ public class UserService {
    * @throws InvalidValueException if the new email (if provided) is already in use by another
    *                               user.
    */
-  public UserResponse updateUser(UserDto userDto) {
+  public UserDto updateUser(UserDto userDto) {
     // Find an existing user
     User existingUser = userRepo.findById(userDto.getId())
         .orElseThrow(
@@ -56,6 +56,6 @@ public class UserService {
     // Save to database
     existingUser = userRepo.save(existingUser);
 
-    return UserResponse.of(existingUser);
+    return UserDto.of(existingUser);
   }
 }

@@ -2,6 +2,7 @@ package com.personal.taskmanagement.model.vo;
 
 import com.personal.taskmanagement.entity.User;
 import com.personal.taskmanagement.model.constant.RoleUser;
+import com.personal.taskmanagement.model.dto.UserDto;
 import com.personal.taskmanagement.util.MapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class UserResponse {
   private String email;
   private RoleUser role;
 
-  public static UserResponse of(User user) {
-    return MapperUtil.mapper.map(user, UserResponse.class);
+  public static UserResponse of(UserDto userDto) {
+    return MapperUtil.mapper.map(userDto, UserResponse.class);
   }
 }
