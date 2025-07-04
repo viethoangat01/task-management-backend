@@ -4,6 +4,7 @@ import com.personal.taskmanagement.model.constant.RoleUser;
 import com.personal.taskmanagement.model.dto.UserDto;
 import com.personal.taskmanagement.model.dto.UserPageDto;
 import com.personal.taskmanagement.model.dto.UserQueryDto;
+import com.personal.taskmanagement.model.vo.UserCreateRequest;
 import com.personal.taskmanagement.model.vo.UserResponse;
 import com.personal.taskmanagement.model.vo.UserUpdateRequest;
 import com.personal.taskmanagement.service.UserService;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -98,5 +100,32 @@ public class UserController {
       @RequestParam(name = "sort", required = false, defaultValue = "createdAt,desc") String sort) {
     UserQueryDto queryParamsDto = new UserQueryDto(name, email, role, page, size, sort);
     return ResponseEntity.ok(userService.searchUser(queryParamsDto));
+  }
+
+  /**
+   * Create new user by admin
+   *
+   * @param userCreateRequest the request body containing new user details
+   * @return ResponseEntity containing the created user's data
+   */
+  @PostMapping
+  @Operation(summary = "Create a new user account (Admin only).",
+      description = "This API allows an administrator to create a new user by providing required user data in the request body.",
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+          description = "User creation request",
+          required = true,
+          content = @Content(
+              mediaType = "application/json",
+              schema = @Schema(implementation = UserCreateRequest.class)
+          )
+      ),
+      responses = {
+          @ApiResponse(responseCode = "200", description = "User successfully created"),
+      })
+  @ApiMessage("User created successfully")
+  public ResponseEntity<UserResponse> createUser(
+      @RequestBody @Valid UserCreateRequest userCreateRequest) {
+    UserDto newUser = userService.createUser(UserDto.of(userCreateRequest));
+    return ResponseEntity.ok(UserResponse.of(newUser));
   }
 }

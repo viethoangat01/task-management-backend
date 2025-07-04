@@ -20,6 +20,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for managing users.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -121,6 +124,33 @@ public class UserService {
     userPageDto.setPagination(metadata);
 
     return userPageDto;
+  }
+
+  /**
+   * Creates a new user in the system.
+   * <p>
+   * This method performs the following actions:
+   *
+   * @param userDto The data transfer object containing user details to create.
+   * @return A {@link UserResponse} of the newly created user.
+   */
+  public UserDto createUser(UserDto userDto) {
+    // Check unique email
+    if (userRepo.existsByEmail(userDto.getEmail())) {
+      throw new InvalidValueException("email", "email is already in use");
+    }
+
+    // Create entity
+    User newUser = new User();
+    newUser.setName(userDto.getName());
+    newUser.setEmail(userDto.getEmail());
+    newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    newUser.setRole(userDto.getRole());
+
+    // Save to database
+    userRepo.save(newUser);
+
+    return UserDto.of(newUser);
   }
 
   private static Sort generateSort(String sortParam) {

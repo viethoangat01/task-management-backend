@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserQueryDto {
+
   private String name;
   private String email;
   private RoleUser role;

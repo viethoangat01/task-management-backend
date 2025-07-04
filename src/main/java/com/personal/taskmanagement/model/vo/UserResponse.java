@@ -1,6 +1,5 @@
 package com.personal.taskmanagement.model.vo;
 
-import com.personal.taskmanagement.entity.User;
 import com.personal.taskmanagement.model.constant.RoleUser;
 import com.personal.taskmanagement.model.dto.UserDto;
 import com.personal.taskmanagement.util.MapperUtil;
