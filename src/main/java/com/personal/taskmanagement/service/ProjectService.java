@@ -10,7 +10,6 @@ import com.personal.taskmanagement.model.exception.InvalidValueException;
 import com.personal.taskmanagement.repository.ProjectMemberRepository;
 import com.personal.taskmanagement.repository.ProjectRepository;
 import com.personal.taskmanagement.repository.UserRepository;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +18,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProjectService {
 
-  private final ProjectRepository projectRepository;
-  private final ProjectMemberRepository projectMemberRepository;
-  private final UserRepository userRepository;
+  private final ProjectRepository projectRepo;
+  private final ProjectMemberRepository projectMemberRepo;
+  private final UserRepository userRepo;
 
   /**
    * Creates a new project with the given project information.
@@ -41,41 +40,33 @@ public class ProjectService {
    */
   public ProjectDto createProject(ProjectDto projectDto) {
     // Check existing owner
-    User owner = userRepository.findById(projectDto.getOwner().getId())
+    User owner = userRepo.findById(projectDto.getOwner().getId())
         .orElseThrow(() -> new InvalidValueException("owner",
             "owner with id " + projectDto.getOwner().getId() + " is not exist"));
 
     // Save project to database without members
-    Project project = Project.builder()
-        .name(projectDto.getName())
-        .description(projectDto.getDescription())
-        .startDate(projectDto.getStartDate())
-        .endDate(projectDto.getEndDate())
-        .owner(owner)
-        .build();
-    projectRepository.save(project);
+    Project project = new Project(projectDto.getName(), projectDto.getDescription(),
+        projectDto.getStartDate(), projectDto.getEndDate(), owner
+    );
 
-    // Checking existing members and save to list members
-    List<ProjectMember> projectMembers = new ArrayList<>();
-    for (MemberDto memberDto : projectDto.getMembers()) {
-      User member = userRepository.findById(memberDto.getId())
-          .orElseThrow(() -> new InvalidValueException("member",
-              "member with id " + memberDto.getId() + " is not exist"));
+    projectRepo.save(project);
 
-      // Create ProjectMember entity
-      ProjectMember projectMember = ProjectMember.builder()
-          .user(member)
-          .role(RoleProject.MEMBER)// Set default role is MEMBER
-          .project(project)
-          .build();
+    // Get existing members
+    List<Long> memberIds = projectDto.getMembers().stream()
+        .map(MemberDto::getId)
+        .toList();
+    List<User> members = userRepo.findAllById(memberIds);
 
-      projectMembers.add(projectMember);
-    }
+    // Create list ProjectMember entity with existing members
+    List<ProjectMember> projectMembers = members.stream()
+        .map(member -> new ProjectMember(member, project,
+            RoleProject.MEMBER)) // Set default role in project is MEMBER
+        .toList();
 
-    // Save projectmember to database
-    projectMemberRepository.saveAll(projectMembers);
+    // Save projectmembers to database
+    projectMemberRepo.saveAll(projectMembers);
 
-    // set to project entity
+    // Set to project entity
     project.setProjectMembers(projectMembers);
 
     return ProjectDto.of(project);

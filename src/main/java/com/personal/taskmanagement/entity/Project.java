@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,7 +28,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Project {
 
   @Id
@@ -59,4 +57,13 @@ public class Project {
 
   @OneToMany(mappedBy = "project")
   private List<ProjectMember> projectMembers = new ArrayList<>();
+
+  public Project(String name, String description, LocalDate startDate, LocalDate endDate,
+      User owner) {
+    this.name = name;
+    this.description = description;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.owner = owner;
+  }
 }

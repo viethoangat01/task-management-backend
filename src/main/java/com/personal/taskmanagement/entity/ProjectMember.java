@@ -14,7 +14,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +27,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ProjectMember {
 
   @Id
@@ -51,4 +49,10 @@ public class ProjectMember {
   @Column(name = "joined_at")
   @CreatedDate
   private Instant joinedAt;
+
+  public ProjectMember(User user, Project project, RoleProject role) {
+    this.user = user;
+    this.project = project;
+    this.role = role;
+  }
 }

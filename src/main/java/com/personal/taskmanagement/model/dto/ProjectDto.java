@@ -1,8 +1,9 @@
 package com.personal.taskmanagement.model.dto;
 
 import com.personal.taskmanagement.entity.Project;
+import com.personal.taskmanagement.entity.ProjectMember;
+import com.personal.taskmanagement.entity.User;
 import com.personal.taskmanagement.model.vo.ProjectCreateRequest;
-import com.personal.taskmanagement.util.MapperUtil;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,10 +38,44 @@ public class ProjectDto {
   private Instant createdAt;
 
   public static ProjectDto of(ProjectCreateRequest projectCreateRequest) {
-    return MapperUtil.mapper.map(projectCreateRequest, ProjectDto.class);
+    OwnerDto owner = OwnerDto.builder().id(projectCreateRequest.getOwnerId()).build();
+    List<MemberDto> members = projectCreateRequest.getMemberIds()
+        .stream()
+        .map(id -> MemberDto.builder().id(id).build())
+        .toList();
+
+    return ProjectDto.builder()
+        .name(projectCreateRequest.getName())
+        .description(projectCreateRequest.getDescription())
+        .startDate(projectCreateRequest.getStartDate())
+        .endDate(projectCreateRequest.getEndDate())
+        .owner(owner)
+        .members(members)
+        .build();
   }
 
   public static ProjectDto of(Project project) {
-    return MapperUtil.mapper.map(project, ProjectDto.class);
+    User ownerEntity = project.getOwner();
+    OwnerDto owner = (ownerEntity == null) ? null : OwnerDto.builder()
+        .id(ownerEntity.getId())
+        .name(ownerEntity.getName())
+        .email(ownerEntity.getEmail())
+        .build();
+
+    List<MemberDto> members = project.getProjectMembers().stream()
+        .map(ProjectMember::getUser)
+        .map(user -> new MemberDto(user.getId(), user.getName()))
+        .toList();
+
+    return ProjectDto.builder()
+        .id(project.getId())
+        .name(project.getName())
+        .description(project.getDescription())
+        .startDate(project.getStartDate())
+        .endDate(project.getEndDate())
+        .owner(owner)
+        .members(members)
+        .createdAt(project.getCreatedAt())
+        .build();
   }
 }
