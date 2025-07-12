@@ -7,10 +7,14 @@ import com.personal.taskmanagement.model.constant.RoleProject;
 import com.personal.taskmanagement.model.dto.MemberDto;
 import com.personal.taskmanagement.model.dto.ProjectDto;
 import com.personal.taskmanagement.model.exception.InvalidValueException;
+import com.personal.taskmanagement.model.exception.ResourceNotFoundException;
 import com.personal.taskmanagement.repository.ProjectMemberRepository;
 import com.personal.taskmanagement.repository.ProjectRepository;
 import com.personal.taskmanagement.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +48,11 @@ public class ProjectService {
         .orElseThrow(() -> new InvalidValueException("owner",
             "owner with id " + projectDto.getOwner().getId() + " is not exist"));
 
+    // Validate startDate and endDate
+    if (projectDto.getStartDate().isAfter(projectDto.getEndDate())) {
+      throw new InvalidValueException("endDate", "endDate must be is equal to or after startDate");
+    }
+
     // Save project to database without members
     Project project = new Project(projectDto.getName(), projectDto.getDescription(),
         projectDto.getStartDate(), projectDto.getEndDate(), owner
@@ -68,6 +77,65 @@ public class ProjectService {
 
     // Set to project entity
     project.setProjectMembers(projectMembers);
+
+    return ProjectDto.of(project);
+  }
+
+  /**
+   * Updates an existing project with new details including name, description,
+   * dates, owner, and member list.
+   *
+   * <p>Members not in the new list will be removed (if orphanRemoval is true),
+   * and new members will be added.
+   *
+   * @param projectDto the updated project data
+   * @return the updated project DTO
+   * @throws ResourceNotFoundException if the project is not found
+   * @throws InvalidValueException if the owner is invalid or dates are incorrect
+   */
+  @Transactional // For using projectmember after fetch project because fetchType is LAZY
+  public ProjectDto updateProject(ProjectDto projectDto) {
+    // Get existing project
+    Project project = projectRepo.findById(projectDto.getId())
+        .orElseThrow(
+            () -> new ResourceNotFoundException(
+                "Project not found with id: " + projectDto.getId()));
+
+    // Validate startDate and endDate
+    if (projectDto.getStartDate().isAfter(projectDto.getEndDate())) {
+      throw new InvalidValueException("endDate", "endDate must be is equal to or after startDate");
+    }
+    project.setStartDate(projectDto.getStartDate());
+    project.setEndDate(projectDto.getEndDate());
+
+    // Validate owner
+    User owner = userRepo.findById(projectDto.getOwner().getId())
+        .orElseThrow(() -> new InvalidValueException("owner",
+            "owner with id " + projectDto.getOwner().getId() + " is not exist"));
+    project.setOwner(owner);
+
+    // Get existing users of member list in request body
+    List<User> members = userRepo.findAllById(projectDto.getMembers().stream()
+        .map(MemberDto::getId)
+        .toList());
+    Set<Long> validMemberIds = members.stream().map(User::getId).collect(Collectors.toSet());
+
+    // Delete member is not in new list members
+    List<ProjectMember> projectMembers = project.getProjectMembers();
+    projectMembers.removeIf(
+        projectMember -> !validMemberIds.contains(projectMember.getUser().getId()));
+
+    for (User member : members) {
+      ProjectMember existing = project.getProjectMemberByUserId(member.getId());
+      if (existing == null) {
+        projectMembers.add(new ProjectMember(member, project, RoleProject.MEMBER));
+      }
+    }
+    project.setName(projectDto.getName());
+    project.setDescription(projectDto.getDescription());
+
+    // Save to database
+    project = projectRepo.save(project);
 
     return ProjectDto.of(project);
   }
