@@ -13,11 +13,13 @@ import com.personal.taskmanagement.repository.ProjectRepository;
 import com.personal.taskmanagement.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
+/**
+ * Service class for managing projects.
+ */
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
@@ -72,7 +74,7 @@ public class ProjectService {
             RoleProject.MEMBER)) // Set default role in project is MEMBER
         .toList();
 
-    // Save projectmembers to database
+    // Save projectMembers to database
     projectMemberRepo.saveAll(projectMembers);
 
     // Set to project entity
@@ -82,8 +84,8 @@ public class ProjectService {
   }
 
   /**
-   * Updates an existing project with new details including name, description,
-   * dates, owner, and member list.
+   * Updates an existing project with new details including name, description, dates, owner, and
+   * member list.
    *
    * <p>Members not in the new list will be removed (if orphanRemoval is true),
    * and new members will be added.
@@ -91,7 +93,7 @@ public class ProjectService {
    * @param projectDto the updated project data
    * @return the updated project DTO
    * @throws ResourceNotFoundException if the project is not found
-   * @throws InvalidValueException if the owner is invalid or dates are incorrect
+   * @throws InvalidValueException     if the owner is invalid or dates are incorrect
    */
   @Transactional // For using projectmember after fetch project because fetchType is LAZY
   public ProjectDto updateProject(ProjectDto projectDto) {
@@ -109,22 +111,28 @@ public class ProjectService {
     project.setEndDate(projectDto.getEndDate());
 
     // Validate owner
+    List<Long> memberIds = projectDto.getMembers().stream()
+        .map(MemberDto::getId)
+        .toList();
+    if (memberIds.contains(projectDto.getOwner().getId())) {
+      throw new InvalidValueException("owner", "owner cannot be a member");
+    }
     User owner = userRepo.findById(projectDto.getOwner().getId())
         .orElseThrow(() -> new InvalidValueException("owner",
             "owner with id " + projectDto.getOwner().getId() + " is not exist"));
     project.setOwner(owner);
 
-    // Get existing users of member list in request body
-    List<User> members = userRepo.findAllById(projectDto.getMembers().stream()
-        .map(MemberDto::getId)
-        .toList());
-    Set<Long> validMemberIds = members.stream().map(User::getId).collect(Collectors.toSet());
+    // Check existing users of member list in request body
+    List<User> members = userRepo.findAllById(memberIds);
+    if (members.size() != projectDto.getMembers().size()) {
+      throw new InvalidValueException("memberIds", "some memberIds are not exist in database");
+    }
 
-    // Delete member is not in new list members
+    // Delete member is not in memberIds list
     List<ProjectMember> projectMembers = project.getProjectMembers();
-    projectMembers.removeIf(
-        projectMember -> !validMemberIds.contains(projectMember.getUser().getId()));
+    projectMembers.removeIf(member -> !memberIds.contains(member.getId()));
 
+    // Add new projectMember
     for (User member : members) {
       ProjectMember existing = project.getProjectMemberByUserId(member.getId());
       if (existing == null) {

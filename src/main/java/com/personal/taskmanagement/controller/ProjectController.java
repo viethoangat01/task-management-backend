@@ -79,7 +79,7 @@ public class ProjectController {
   @ApiMessage(value = "Project updated successfully")
   public ResponseEntity<ProjectDto> updateProject(
       @RequestBody @Valid ProjectUpdateRequest projectUpdateRequest
-  ){
+  ) {
     return ResponseEntity.ok(projectService.updateProject(ProjectDto.of(projectUpdateRequest)));
   }
 }

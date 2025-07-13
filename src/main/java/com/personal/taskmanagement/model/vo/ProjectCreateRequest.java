@@ -2,10 +2,8 @@ package com.personal.taskmanagement.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.personal.taskmanagement.model.constant.GlobalConstant;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +25,10 @@ public class ProjectCreateRequest {
 
   private String description;
 
-  @FutureOrPresent(message = "startDate must not be before today")
   @NotNull(message = "start date must not be null")
   @JsonFormat(pattern = GlobalConstant.DATE_PATTERN)
   private LocalDate startDate;
 
-  @FutureOrPresent(message = "startDate must not be before today")
   @NotNull(message = "end date must not be null")
   @JsonFormat(pattern = GlobalConstant.DATE_PATTERN)
   private LocalDate endDate;
