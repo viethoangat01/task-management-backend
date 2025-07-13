@@ -7,7 +7,6 @@ import com.personal.taskmanagement.model.vo.ProjectCreateRequest;
 import com.personal.taskmanagement.model.vo.ProjectUpdateRequest;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +33,7 @@ public class ProjectDto {
 
   private OwnerDto owner;
 
-  private List<MemberDto> members = new ArrayList<>();
+  private List<MemberDto> members;
 
   private Instant createdAt;
 
@@ -56,11 +55,13 @@ public class ProjectDto {
   }
 
   public static ProjectDto of(ProjectUpdateRequest projectUpdateRequest) {
-    OwnerDto owner = OwnerDto.builder().id(projectUpdateRequest.getOwnerId()).build();
-    List<MemberDto> members = projectUpdateRequest.getMemberIds()
-        .stream()
-        .map(id -> MemberDto.builder().id(id).build())
-        .toList();
+    OwnerDto owner = projectUpdateRequest.getOwnerId() == null ? null
+        : OwnerDto.builder().id(projectUpdateRequest.getOwnerId()).build();
+    List<MemberDto> members =
+        projectUpdateRequest.getMemberIds() == null ? null : projectUpdateRequest.getMemberIds()
+            .stream()
+            .map(id -> MemberDto.builder().id(id).build())
+            .toList();
 
     return ProjectDto.builder()
         .id(projectUpdateRequest.getId())
