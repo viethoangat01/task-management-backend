@@ -1,5 +1,6 @@
 package com.personal.taskmanagement.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -55,7 +56,7 @@ public class Project {
   @CreatedDate
   private Instant createdAt;
 
-  @OneToMany(mappedBy = "project")
+  @OneToMany(mappedBy = "project", orphanRemoval = true, cascade = CascadeType.ALL)
   private List<ProjectMember> projectMembers = new ArrayList<>();
 
   public Project(String name, String description, LocalDate startDate, LocalDate endDate,
@@ -65,5 +66,16 @@ public class Project {
     this.startDate = startDate;
     this.endDate = endDate;
     this.owner = owner;
+  }
+
+  public ProjectMember getProjectMemberByUserId(Long userId) {
+    return projectMembers.stream()
+        .filter(projectMember -> projectMember.getUser().getId().equals(userId)).findFirst()
+        .orElse(null);
+  }
+
+  public boolean hasProjectMember(Long memberId) {
+    return projectMembers.stream()
+        .anyMatch(member -> member.getUser().getId().equals(memberId));
   }
 }
