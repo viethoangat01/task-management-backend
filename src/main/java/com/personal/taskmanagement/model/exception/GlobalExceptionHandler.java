@@ -42,6 +42,19 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
+  // Handle ResourceNotFoundException
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<RestResponse<String>> ResourceNotFoundException(
+      ResourceNotFoundException ex) {
+    RestResponse<String> response = new RestResponse<>();
+    response.setTimestamp(Instant.now());
+    response.setStatus(HttpStatus.NOT_FOUND.value());
+    response.setMessage("404 Not Found");
+    response.setData(ex.getMessage());
+
+    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<RestResponse<Map<String, String>>> handleValidationExceptions(
       MethodArgumentNotValidException ex) {
