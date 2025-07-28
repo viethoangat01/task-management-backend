@@ -13,5 +13,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+      - name: Check Java Style (Checkstyle)
+        run: ./gradlew checkstyleMain checkstyleTest
       - run: chmod +x ./gradlew
       - run: ./gradlew build
