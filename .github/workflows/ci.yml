@@ -28,4 +28,6 @@ jobs:
           project: 'spring-boot'
           format: 'HTML'
           path: '.'
+        env:
+          JAVA_HOME: ''
       - run: ./gradlew build
