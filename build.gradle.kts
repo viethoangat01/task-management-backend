@@ -1,7 +1,13 @@
 plugins {
 	java
+	checkstyle
 	id("org.springframework.boot") version "3.5.0"
 	id("io.spring.dependency-management") version "1.1.7"
+}
+
+checkstyle {
+	toolVersion = "10.3.2"
+	configFile = file("config/checkstyle/checkstyle.xml")
 }
 
 group = "com.personal"
@@ -25,7 +31,7 @@ dependencies {
 
 	// --- DATABASE ---
 	implementation("org.liquibase:liquibase-core")
-	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+	implementation("org.mariadb.jdbc:mariadb-java-client")
 
 	// --- SPRING SECURITY ---
 	implementation("org.springframework.boot:spring-boot-starter-security")
