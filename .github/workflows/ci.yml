@@ -11,6 +11,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - run: chmod +x ./gradlew
+      - name: Check Java Style (Checkstyle)
+        run: ./gradlew checkstyleMain checkstyleTest
       - name: Scan for Secrets
         uses: gitleaks/gitleaks-action@v2
         env:
@@ -20,11 +27,5 @@ jobs:
         with:
           project: 'spring-boot'
           format: 'HTML'
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 17
-      - run: chmod +x ./gradlew
-      - name: Check Java Style (Checkstyle)
-        run: ./gradlew checkstyleMain checkstyleTest
+          path: '.'
       - run: ./gradlew build
