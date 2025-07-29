@@ -29,6 +29,5 @@ jobs:
           format: 'HTML'
           path: '.'
         env:
-          JAVA_HOME: ''
-          JAVA_HOME_17_X64: ''
+          JAVA_HOME: '/opt/jdk'
       - run: ./gradlew build
